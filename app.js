@@ -65,35 +65,34 @@ class Projectile {
         this.height = height
         this.color = color
         this.alive = true
-        this.speed = 20
-        this.direction = { up: false }
-        this.renderProjectile = function () {
-            ctx.beginPath()
-            ctx.moveTo((player.x + 10), (player.y - 5))
-            ctx.lineTo((player.x + 10), (player.y - 15))
-            ctx.lineWidth = 2
-            ctx.strokeStyle = color
-            ctx.stroke()
-        }
+        this.speed = 100
         this.shoot = function (key) {
             if (key == ' ') {
-                this.direction.up = true
                 console.log(this)
-                player.y -= this.speed
+                ctx.beginPath()
+                ctx.moveTo(player.x + 10, player.y - 10)
+                ctx.lineTo(player.x + 10, player.y - 300)
+                ctx.lineWidth = 2
+                ctx.strokeStyle = color
+                ctx.stroke()
+                // this.y -= this.speed
+                // this.height -= this.speed
             }
         }
     }
 }
 
 const player = new Player(10, 10, 20, 20, 'rgb(7,68,252)')
-const projectile = new Projectile((player.x + 10), (player.y - 5), (player.x + 10), (player.y - 15), 'rgba(252,191,7,1)')
+const projectile = new Projectile(player.x, player.y, player.width, player.height, 'rgba(252,191,7,1)')
+
+projectile.shoot()
 
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     player.render()
-    projectile.renderProjectile()
+    // projectile.renderProjectile()
     player.movePlayer()
-    projectile.shoot()
+    
 }
 
 document.addEventListener('keydown', (e) => {
