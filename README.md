@@ -16,15 +16,15 @@ Remake of the classic Centipede arcade game made with canvas. The game features 
 ## User Stories
 
 As a user, I want the ability to:
-    - input name to save score
-    - move character with keyboard input (WASD or arrow keys)
-    - fire projectiles
-    - damage the environment
-    - destroy enemies (for varying amounts of points depending on the enemy type)
-    - change the player character and environment color upon beating a level
-    - keep track of which level I'm on
-    - pause the game
-    - continue from paused state
+* input name to save score
+* move character with keyboard input (WASD or arrow keys)
+* fire projectiles
+* damage the environment
+* destroy enemies (for varying amounts of points depending on the enemy type)
+* change the player character and environment color upon beating a level
+* keep track of which level I'm on
+* pause the game
+* continue from paused state
 
 ## Wireframes
 
