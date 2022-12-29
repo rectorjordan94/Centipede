@@ -96,15 +96,11 @@ class Projectile {
 class ProjectileController {
     projectiles = []
     timeTillNextProjectile = 0
-    constructor(canvas) {
-        this.canvas = canvas
-    }
     shoot(x, y, speed, damage, delay) { 
         if (this.timeTillNextProjectile <= 0) {
             this.projectiles.push(new Projectile(x, y, speed, damage))
             this.timeTillNextProjectile = delay
         }
-
         this.timeTillNextProjectile--
     }
     render() {
@@ -121,41 +117,54 @@ class ProjectileController {
     }
 }
 
+class Obstacle {
+    constructor() {
+        this.x = getRandomCoordinates(canvas.width)
+        this.y = getRandomCoordinates(canvas.height)
+        this.width = 15
+        this.height = 15
+        this.color = 'pink'
+        this.alive = true
+        this.health = 3
+    }
+    render() {
+        ctx.fillStyle = this.color
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+    }
+}
+
+const obstacles = []
+let beginLevelOne = true
+
+
+const getRandomCoordinates = (max) => {
+    return Math.floor(Math.random() * max)
+}
+
 const projectileController = new ProjectileController()
 const player = new Player(10, 10, 20, 20, 'rgb(7,68,252)', projectileController)
-// let x = player.x
-// let y = player.y
-// let dy = -30
 
-// function drawProjectile() {
-//     ctx.beginPath()
-//     ctx.fillRect(x, y, 10, 10)
-//     ctx.fillStyle = 'rgb(7,69,252)'
-//     ctx.closePath()
-// }
+const spawnObstacles = () => {
+    for (let i = 0; i < 10; i++){
+        const obstacle = new Obstacle()
+        obstacles.push(obstacle)
+    }
+}
 
-
-// const projectile = new Projectile(19, 10, 2, 10, 'rgba(252,191,7,1)')
-
-// const shoot = () => {
-//     drawProjectile()
-//     y -= dy
-// }
+spawnObstacles()
+console.log(obstacles)
 
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     projectileController.render()
+    // obstacleSpawner.render()
+    // obstacles.render()
     player.render()
     player.movePlayer()
-    // console.log(player.shootPressed)
-    // shoot()
-    // console.log(player.x, player.y)
-    // if (projectile.alive) {
-    //     projectile.renderProjectile()
-    //     // projectile.moveProjectile()
-    // }
-    // drawProjectile()
-    // y -= dy
+    for (let i = 0; i < 10; i++) {
+        obstacles[i].render()
+    }
+    
 }
 
 document.addEventListener('keydown', (e) => {
