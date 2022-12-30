@@ -83,14 +83,25 @@ class Projectile {
         this.damage = damage
         this.width = 5
         this.height = 10
-        this.color = 'red'
+        this.color = 'yellow'
     }
     render() {
         ctx.fillStyle = this.color
         this.y -= this.speed
         ctx.fillRect(this.x, this.y, this.width, this.height)
     }
-
+    collideWith(sprite) {
+        if (
+            this.x < sprite.x + sprite.width &&
+            this.x + this.width > sprite.x &&
+            this.y < sprite.y + sprite.height &&
+            this.y + this.height > sprite.y
+        ) {
+            sprite.takeDamage(this.damage)
+            return true
+        }
+        return false
+    }
 }
 
 class ProjectileController {
@@ -115,57 +126,103 @@ class ProjectileController {
     isProjectileOffScreen(projectile) {
         return projectile.y <= -projectile.height
     }
+    collideWith(sprite) {
+        return this.projectiles.some((projectile) => {
+            if (projectile.collideWith(sprite)) {
+                this.projectiles.splice(this.projectiles.indexOf(projectile), 1)
+                return true
+            }
+            return false
+        })
+    }
+}
+
+const getRandomCoordinates = (max) => {
+    return Math.floor((Math.random() * max) + 50)
 }
 
 class Obstacle {
     constructor() {
-        this.x = getRandomCoordinates(canvas.width)
-        this.y = getRandomCoordinates(canvas.height)
-        this.width = 15
-        this.height = 15
+        this.x = getRandomCoordinates(canvas.width - 60)
+        this.y = getRandomCoordinates(canvas.height / 2 + 50)
+        this.width = 9
+        this.height = 9
         this.color = 'pink'
         this.alive = true
         this.health = 3
     }
     render() {
-        ctx.fillStyle = this.color
-        ctx.fillRect(this.x, this.y, this.width, this.height)
+        if (this.health === 3) {
+            ctx.fillStyle = this.color
+            ctx.fillRect(this.x, this.y, this.width, this.height)
+        } else if (this.health === 2) {
+            ctx.fillStyle = 'red'
+            ctx.fillRect(this.x, this.y, this.width, this.height - 3)
+        } else if (this.health === 1) {
+            ctx.fillStyle = 'purple'
+            ctx.fillRect(this.x, this.y, this.width, this.height - 6)
+        }
+    }
+    takeDamage(damage) {
+        this.health -= damage
     }
 }
 
-const obstacles = []
-let beginLevelOne = true
-
-
-const getRandomCoordinates = (max) => {
-    return Math.floor(Math.random() * max)
-}
+const levelOneObstacles = [
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle(),
+    new Obstacle()
+]
 
 const projectileController = new ProjectileController()
-const player = new Player(10, 10, 20, 20, 'rgb(7,68,252)', projectileController)
+const player = new Player(371, 468, 20, 20, 'rgb(7,68,252)', projectileController)
 
-const spawnObstacles = () => {
-    for (let i = 0; i < 10; i++){
-        const obstacle = new Obstacle()
-        obstacles.push(obstacle)
-    }
-}
 
-spawnObstacles()
-console.log(obstacles)
+
+// const detectHit = (obstacle) => {
+//     if (projectileController.projectiles.projectile.x < obstacle.x + obstacle.width
+//         && projectileController.projectiles.projectile.x + projectileController.projectiles.projectile.width > obstacle.x
+//         && projectileController.projectiles.projectile.y < obstacle.y + obstacle.height
+//         && projectileController.projectiles.projectile.y + projectileController.projectiles.projectile.height > obstacle.y) {
+//             obstacle.alive = false
+//         }
+// }
 
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     projectileController.render()
-    // obstacleSpawner.render()
-    // obstacles.render()
     player.render()
     player.movePlayer()
-    for (let i = 0; i < 10; i++) {
-        obstacles[i].render()
-    }
-    
+    levelOneObstacles.forEach((obstacle) => {
+        if (projectileController.collideWith(obstacle)) {
+            if (obstacle.health <= 0) {
+                const index = levelOneObstacles.indexOf(obstacle)
+                levelOneObstacles.splice(index, 1)
+            }
+        } else {
+            obstacle.render()
+        }
+})
 }
+
 
 document.addEventListener('keydown', (e) => {
     player.setDirection(e.key)
@@ -175,6 +232,10 @@ document.addEventListener('keyup', (e) => {
     if (['w', 'a', 's', 'd', ' '].includes(e.key)) {
         player.unSetDirection(e.key)
     }
+})
+
+document.addEventListener('click', (e) => {
+    console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
 })
 
 const gameInterval = setInterval(gameLoop, 60)
