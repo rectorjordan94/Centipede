@@ -5,7 +5,6 @@ canvas.setAttribute('width', getComputedStyle(canvas)['width'])
 canvas.setAttribute('height', getComputedStyle(canvas)['height'])
 
 let level = 1
-const obstacles = []
 
 class Player {
     constructor(x, y, width, height, color, projectileController) {
@@ -63,9 +62,8 @@ class Player {
         }
         this.shoot = function () {
             if (this.shootPressed) {
-                console.log('shoot')
-                const speed = 20
-                const delay = 4
+                const speed = 15
+                const delay = 5
                 const damage = 1
                 const projectileX = this.x + this.width / 2.5
                 const projectileY = this.y
@@ -86,21 +84,24 @@ class Projectile {
         this.color = 'yellow'
     }
     render() {
+        // render and initiate movement of projectiles
         ctx.fillStyle = this.color
         this.y -= this.speed
         ctx.fillRect(this.x, this.y, this.width, this.height)
     }
     collideWith(sprite) {
+        // detect collision with obstacles in environment or centipede segments
         if (
-            this.x < sprite.x + sprite.width &&
-            this.x + this.width > sprite.x &&
-            this.y < sprite.y + sprite.height &&
-            this.y + this.height > sprite.y
+            this.x < (sprite.x + sprite.width || sprite.x + sprite.radius) &&
+            this.x + this.width > (sprite.x || sprite.x - sprite.radius) &&
+            this.y < (sprite.y + sprite.height || sprite.y + sprite.radius) &&
+            this.y + this.height > (sprite.y || sprite.y - sprite.radius)
         ) {
             sprite.takeDamage(this.damage)
             return true
         }
         return false
+    
     }
 }
 
@@ -108,25 +109,32 @@ class ProjectileController {
     projectiles = []
     timeTillNextProjectile = 0
     shoot(x, y, speed, damage, delay) { 
+        // if there is no time till next projectile, fire one
         if (this.timeTillNextProjectile <= 0) {
             this.projectiles.push(new Projectile(x, y, speed, damage))
+            // set time till next projectile equal to the delay
             this.timeTillNextProjectile = delay
         }
+        // decrement time till next projectile
         this.timeTillNextProjectile--
     }
     render() {
+        // for each projectile in the array of projectiles, detect if the projectile is off screen and if so remove it from the array of projectiles
         this.projectiles.forEach((projectile) => {
             if (this.isProjectileOffScreen(projectile)) {
                 const index = this.projectiles.indexOf(projectile)
                 this.projectiles.splice(index, 1)
             }
+            // otherwise, if projectile is currently on screen, render it
             projectile.render()
         })
     }
     isProjectileOffScreen(projectile) {
+        // detects if projectile is off screen
         return projectile.y <= -projectile.height
     }
     collideWith(sprite) {
+        // if any of the projectiles collide with a sprite (either an obstacle or a segment of the centipede) remove it from the array of projectiles and return true
         return this.projectiles.some((projectile) => {
             if (projectile.collideWith(sprite)) {
                 this.projectiles.splice(this.projectiles.indexOf(projectile), 1)
@@ -137,36 +145,50 @@ class ProjectileController {
     }
 }
 
+const centipede = []
+
 class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 10
+        this.speed = 5
         this.radius = 8
         this.color = 'green'
+        this.health = 1
         this.direction = {
             down: false,
             left: false,
+            // centipede always moves to the right by default
             right: true
         }
     }
     render() {
-        ctx.beginPath()
-        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
-        ctx.fillStyle = this.color
-        ctx.fill()
+        if (this.health === 1) {
+            ctx.beginPath()
+            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+            if (level === 1) {
+                ctx.fillStyle = this.color
+            } else if (level === 2) {
+                ctx.fillStyle = 'red'
+            } else if (level === 3) {
+                ctx.fillStyle = 'orange'
+            }
+            ctx.fill()
+        } 
     }
     move() {
         if (this.direction.right === true) {
             this.x += this.speed
             if (this.x + this.radius >= canvas.width - 16) {
+                // if the right edge of a centipede segment touches the edge of the canvas, stop moving right and start moving downwards
                 this.direction.right = false
                 this.direction.down = true
             }
         }
         if (this.direction.left === true) {
             this.x -= this.speed
-            if (this.x <= 0) {
+            if (this.x - this.radius <= 0) {
+                // if the left edge of a centipede segment touches the left edge of the canvas, stop moving left and start moving downwards
                 this.direction.left = false
                 this.direction.down = true
             }
@@ -180,32 +202,36 @@ class CentipedeSegment {
             }
             this.direction.down = false
         }
-        
+    }
+    takeDamage(damage) {
+        this.health -= damage
     }
 }
 
-class CentipedeBody {
-    segmentArray = [
-        new CentipedeSegment(100,100),
-        new CentipedeSegment(116,100),
-        new CentipedeSegment(132,100),
-    ]
-    render() {
-        this.segmentArray.forEach((segment) => segment.render())
-    }
-    moveBody() {
-        this.segmentArray.forEach((segment) => segment.move())
-    }
-}
+// class CentipedeBody {
+//     segmentArray = [
+//         new CentipedeSegment(100,100),
+//         new CentipedeSegment(116,100),
+//         new CentipedeSegment(132,100),
+//     ]
+//     render() {
+//         this.segmentArray.forEach((segment) => segment.render())
+//     }
+//     moveBody() {
+//         this.segmentArray.forEach((segment) => segment.move())
+//     }
+// }
 
 const getRandomCoordinates = (max) => {
-    return Math.floor((Math.random() * max) + 50)
+    return Math.floor((Math.random() * max) + 16)
 }
 
+const obstacles = []
+
 class Obstacle {
-    constructor() {
-        this.x = getRandomCoordinates(canvas.width - 100)
-        this.y = getRandomCoordinates(canvas.height / 2 + 100)
+    constructor(x, y) {
+        this.x = x
+        this.y = y
         this.width = 9
         this.height = 9
         this.color = 'pink'
@@ -229,105 +255,102 @@ class Obstacle {
     }
 }
 
-// const obstacleSpawner = () => {
-//     if (level === 1) {
-//         for (let i = 0; i < 10; i++){
-//             obstacles.push(new Obstacle)
-//         }
-//     }
-//     obstacles.forEach((obstacle) => obstacle.render())
-// }
+const obstacleSpawner = () => {
+    for (let i = 0; i < 20; i++){
+        obstacles.push(new Obstacle(getRandomCoordinates(canvas.width - 100), getRandomCoordinates(canvas.height / 2 + 100)))
+    }
+}
 
-// const levelOne = () => {
-//     // const obstacles = []
-//     // for (let i = 0; i < 10; i++){
-//     //     obstacles.push(new Obstacle)
-//     // }
-//     // const centipede = []
-//     // for (let i = 0; i < 5; i++){
-//     //     centipede.push(new CentipedeSegment(getRandomCoordinates(100), getRandomCoordinates(100)))
-//     // }
-//     // return [obstacles, centipede]
-//     const levelOneObstacles = [
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle(),
-//         new Obstacle()
-//     ]
-//     const centipede = [
-//         new CentipedeSegment(),
-//         new CentipedeSegment(),
-//         new CentipedeSegment(),
-//         new CentipedeSegment(),
-//         new CentipedeSegment(),
-//     ]
-    
-//     levelOneObstacles.forEach((obstacle) => obstacle.render())
-//     centipede.forEach((segment) => segment.render())
-// }
+obstacleSpawner()
 
-const levelOneObstacles = [
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle(),
-    new Obstacle()
-]
+let centipedeX = 50
+let centipedeY = 50
+let centipedeLength = 5
+const centipedeSpawner = () => {
+    for (let i = 0; i < centipedeLength; i++){
+        centipede.push(new CentipedeSegment(centipedeX + 16*i, centipedeY))
+    }
+    // centipede.push(new CentipedeSegment(centipedeX,100))  
+    // centipede.push(new CentipedeSegment(centipedeX + 16,100))  
+    // centipede.push(new CentipedeSegment(centipedeX + 16*2,100))  
+    // centipede.push(new CentipedeSegment(centipedeX + 16*3,100))  
+    // centipede.push(new CentipedeSegment(centipedeX + 16*4,100))  
+}
+
+centipedeSpawner()
+
+// const levelOneObstacles = [
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle(),
+//     new Obstacle()
+// ]
+
+// const levelOneCentipede = [
+//     new CentipedeSegment(100,100),
+//     new CentipedeSegment(116,100),
+//     new CentipedeSegment(132,100)
+// ]
 
 const projectileController = new ProjectileController()
 const player = new Player(371, 468, 20, 20, 'rgb(7,68,252)', projectileController)
-const centipede = new CentipedeBody()
-// const segment = new CentipedeSegment(100, 100)
-// const segment2 = new CentipedeSegment(116,100)
-// const segment3 = new CentipedeSegment(100-16,100)
+// const centipede = new CentipedeBody()
 
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0,0, canvas.width, canvas.height)
     projectileController.render()
     player.render()
     player.movePlayer()
-    
-    // if (level === 1) {
-    //     levelOne()
-    // }
-    // segment.render()
-    // segment2.render()
-    // segment3.render()
-    centipede.render()
-    // levelOne()
-    centipede.moveBody()
-    levelOneObstacles.forEach((obstacle) => {
+    // centipede.render()
+    // centipede.moveBody()
+    obstacles.forEach((obstacle) => {
         if (projectileController.collideWith(obstacle)) {
             if (obstacle.health <= 0) {
-                const index = levelOneObstacles.indexOf(obstacle)
-                levelOneObstacles.splice(index, 1)
+                const index = obstacles.indexOf(obstacle)
+                obstacles.splice(index, 1)
             }
         } else {
             obstacle.render()
         }
     })
+    centipede.forEach((segment) => {
+        if (projectileController.collideWith(segment)) {
+            if (segment.health <= 0) {
+                const index = centipede.indexOf(segment)
+                centipede.splice(index, 1)
+            }
+        } else {
+            segment.render()
+            segment.move()
+        }
+    })
+    if (centipede.length === 0) {
+        level++
+        centipedeLength++
+        centipede.length = 0
+        obstacles.length = 0
+        centipedeSpawner()
+        obstacleSpawner()
+    }
 }
 
 
@@ -345,7 +368,7 @@ document.addEventListener('click', (e) => {
     console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
 })
 
-const gameInterval = setInterval(gameLoop, 60)
+const gameInterval = setInterval(gameLoop, 30)
 
 const stopGameLoop = () => { clearInterval(gameInterval) }
 
