@@ -1,5 +1,8 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
+const scoreDisplay = document.getElementById('score')
+const livesDisplay = document.getElementById('lives')
+
 
 canvas.setAttribute('width', getComputedStyle(canvas)['width'])
 canvas.setAttribute('height', getComputedStyle(canvas)['height'])
@@ -101,7 +104,6 @@ class Projectile {
             return true
         }
         return false
-    
     }
 }
 
@@ -313,17 +315,12 @@ const projectileController = new ProjectileController()
 const player = new Player(371, 468, 20, 20, 'rgb(7,68,252)', projectileController)
 // const centipede = new CentipedeBody()
 
-const gameLoop = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = 'black'
-    ctx.fillRect(0,0, canvas.width, canvas.height)
-    projectileController.render()
-    player.render()
-    player.movePlayer()
-    // centipede.render()
-    // centipede.moveBody()
+let score = 0
+const detectHit = () => {
     obstacles.forEach((obstacle) => {
         if (projectileController.collideWith(obstacle)) {
+            score += 5
+            scoreDisplay.textContent = `Score: ${score}`
             if (obstacle.health <= 0) {
                 const index = obstacles.indexOf(obstacle)
                 obstacles.splice(index, 1)
@@ -334,6 +331,8 @@ const gameLoop = () => {
     })
     centipede.forEach((segment) => {
         if (projectileController.collideWith(segment)) {
+            score += 100
+            scoreDisplay.textContent = `Score: ${score}`
             if (segment.health <= 0) {
                 const index = centipede.indexOf(segment)
                 centipede.splice(index, 1)
@@ -343,7 +342,12 @@ const gameLoop = () => {
             segment.move()
         }
     })
+}
+
+const levelUp = () => {
     if (centipede.length === 0) {
+        score += 1000
+        scoreDisplay.textContent = `Score: ${score}`
         level++
         centipedeLength++
         centipede.length = 0
@@ -353,6 +357,14 @@ const gameLoop = () => {
     }
 }
 
+const gameLoop = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    projectileController.render()
+    player.render()
+    player.movePlayer()
+    detectHit()
+    levelUp()
+}
 
 document.addEventListener('keydown', (e) => {
     player.setDirection(e.key)

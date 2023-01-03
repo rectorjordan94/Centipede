@@ -4,19 +4,37 @@ html, body {
 }
 
 body {
-    padding-top: 50px;
     text-align: center;
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(161, 86, 86);
 }
 
+/* main {
+    background-color: rgb(0, 0, 0);
+} */
 canvas {
-    background-color: rgb(124, 124, 124);
+    background-color: rgb(0, 0, 0);
     width: 80%;
     height: 500px;
 }
 
 #container {
     margin: 0 auto;
-    background-color: rgb(34, 34, 34);
+    background-color: rgb(0, 0, 0);
     padding: 10px;
+}
+
+.game-info {
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    padding-bottom: 10px;
+}
+
+#title {
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 40px;
+    letter-spacing: 5px;
 }
