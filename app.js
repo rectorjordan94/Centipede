@@ -3,8 +3,8 @@ const ctx = canvas.getContext('2d')
 const scoreDisplay = document.getElementById('score')
 const livesDisplay = document.getElementById('lives')
 
-canvas.setAttribute('width', getComputedStyle(canvas)['width'])
-canvas.setAttribute('height', getComputedStyle(canvas)['height'])
+canvas.setAttribute('width', '753.61px')
+canvas.setAttribute('height', '500px')
 
 let level = 1
 
@@ -208,42 +208,18 @@ class CentipedeSegment {
         this.health -= damage
     }
     collideWith(sprite) {
-        // detect collision with obstacles in environment or centipede segments
+        // detect collision with obstacles in environment or edges of canvas
         if (
             this.x - this.radius < sprite.x + sprite.width &&
             this.x + this.radius > sprite.x &&
             this.y - this.radius < sprite.y + sprite.height &&
             this.y + this.radius > sprite.y
         ) {
-            // if (this.direction.right) {
-            //     this.direction.down = true
-            //     this.direction.left = true
-            //     // this.move()
-            // } else if (this.direction.left) {
-            //     this.direction.down = true
-            //     this.direction.right = true
-            //     // this.move()
-            // }
-            // this.direction.down = true
             return true
         }
         return false
     }
 }
-
-// class CentipedeBody {
-//     segmentArray = [
-//         new CentipedeSegment(100,100),
-//         new CentipedeSegment(116,100),
-//         new CentipedeSegment(132,100),
-//     ]
-//     render() {
-//         this.segmentArray.forEach((segment) => segment.render())
-//     }
-//     moveBody() {
-//         this.segmentArray.forEach((segment) => segment.move())
-//     }
-// }
 
 const getRandomCoordinates = (max) => {
     return Math.floor((Math.random() * max) + 16)
@@ -294,51 +270,16 @@ const centipedeSpawner = () => {
     // spawns the centipede array, with each incremented segment of the array beginning at the end of the previous segment
     for (let i = 0; i < centipedeLength; i++){
         centipede.push(new CentipedeSegment(centipedeX + 16*i, centipedeY))
-    }
-    // centipede.push(new CentipedeSegment(centipedeX,100))  
-    // centipede.push(new CentipedeSegment(centipedeX + 16,100))  
-    // centipede.push(new CentipedeSegment(centipedeX + 16*2,100))  
-    // centipede.push(new CentipedeSegment(centipedeX + 16*3,100))  
-    // centipede.push(new CentipedeSegment(centipedeX + 16*4,100))  
+    } 
 }
 
 centipedeSpawner()
 
-// const levelOneObstacles = [
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle(),
-//     new Obstacle()
-// ]
-
-// const levelOneCentipede = [
-//     new CentipedeSegment(100,100),
-//     new CentipedeSegment(116,100),
-//     new CentipedeSegment(132,100)
-// ]
-
 const projectileController = new ProjectileController()
 const player = new Player(371, 468, 20, 20, 'rgb(7,68,252)', projectileController)
-// const centipede = new CentipedeBody()
 
 let score = 0
+let lives = 3
 const detectHit = () => {
     obstacles.forEach((obstacle) => {
         if (projectileController.collideWith(obstacle)) {
@@ -408,6 +349,36 @@ const levelUp = () => {
     }
 }
 
+let functionHolder
+function disableHitDetection() {
+    centipede.forEach((segment) => {
+        if (!functionHolder) functionHolder = segment.collideWith
+        segment.collideWith = function(){}
+    })
+}
+
+function enableHitDetection() {
+    segment.collideWith = functionHolder
+}
+
+// centipede.forEach((segment) => {
+//     console.log(segment.collideWith)
+// })
+
+const die = () => {
+    centipede.forEach((segment) => {
+        if (segment.collideWith(player)) {
+            disableHitDetection()
+            lives--
+            livesDisplay.textContent = `Lives: ${lives}`
+            centipede.length = 0
+            obstacles.length = 0
+            centipedeSpawner()
+            obstacleSpawner()
+        }
+    })
+}
+
 const gameLoop = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     projectileController.render()
@@ -415,6 +386,7 @@ const gameLoop = () => {
     player.movePlayer()
     detectHit()
     levelUp()
+    die()
     requestAnimationFrame(gameLoop)
 }
 
@@ -433,10 +405,6 @@ document.addEventListener('keyup', (e) => {
 document.addEventListener('click', (e) => {
     console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
 })
-
-// const gameInterval = setInterval(gameLoop, 30)
-
-// const stopGameLoop = () => { clearInterval(gameInterval) }
 
 document.addEventListener('DOMContentLoaded', function () {
     gameLoop()
