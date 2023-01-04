@@ -3,7 +3,6 @@ const ctx = canvas.getContext('2d')
 const scoreDisplay = document.getElementById('score')
 const livesDisplay = document.getElementById('lives')
 
-
 canvas.setAttribute('width', getComputedStyle(canvas)['width'])
 canvas.setAttribute('height', getComputedStyle(canvas)['height'])
 
@@ -18,7 +17,7 @@ class Player {
         this.color = color
         this.projectileController = projectileController
         this.alive = true
-        this.speed = 15
+        this.speed = 5
         this.shootPressed = false
         this.direction = {
             up: false,
@@ -48,7 +47,7 @@ class Player {
         this.movePlayer = function () {
             if (this.direction.up) {
                 this.y -= this.speed
-                if (this.y <= 0) { this.y = 0 }
+                if (this.y <= 375) { this.y = 375 }
             }
             if (this.direction.left) {
                 this.x -= this.speed
@@ -65,8 +64,8 @@ class Player {
         }
         this.shoot = function () {
             if (this.shootPressed) {
-                const speed = 15
-                const delay = 5
+                const speed = 5
+                const delay = 10
                 const damage = 1
                 const projectileX = this.x + this.width / 2.5
                 const projectileY = this.y
@@ -153,7 +152,7 @@ class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 5
+        this.speed = 3
         this.radius = 8
         this.color = 'green'
         this.health = 1
@@ -258,6 +257,7 @@ class Obstacle {
 }
 
 const obstacleSpawner = () => {
+    // spawns an array of obstacles at random coordinates
     for (let i = 0; i < 20; i++){
         obstacles.push(new Obstacle(getRandomCoordinates(canvas.width - 100), getRandomCoordinates(canvas.height / 2 + 100)))
     }
@@ -265,10 +265,11 @@ const obstacleSpawner = () => {
 
 obstacleSpawner()
 
-let centipedeX = 50
-let centipedeY = 50
+let centipedeX = getRandomCoordinates(400)
+let centipedeY = getRandomCoordinates(25)
 let centipedeLength = 5
 const centipedeSpawner = () => {
+    // spawns the centipede array, with each incremented segment of the array beginning at the end of the previous segment
     for (let i = 0; i < centipedeLength; i++){
         centipede.push(new CentipedeSegment(centipedeX + 16*i, centipedeY))
     }
@@ -364,7 +365,10 @@ const gameLoop = () => {
     player.movePlayer()
     detectHit()
     levelUp()
+    requestAnimationFrame(gameLoop)
 }
+// requestAnimationFrame(gameLoop)
+
 
 document.addEventListener('keydown', (e) => {
     player.setDirection(e.key)
@@ -380,11 +384,14 @@ document.addEventListener('click', (e) => {
     console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
 })
 
-const gameInterval = setInterval(gameLoop, 30)
+// const gameInterval = setInterval(gameLoop, 30)
 
-const stopGameLoop = () => { clearInterval(gameInterval) }
+// const stopGameLoop = () => { clearInterval(gameInterval) }
 
 document.addEventListener('DOMContentLoaded', function () {
-    gameInterval
+    gameLoop()
 })
+
+
+
 
