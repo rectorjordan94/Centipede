@@ -195,8 +195,8 @@ class CentipedeSegment {
             }
         }
         if (this.direction.down === true) {
-            this.y += 16
-            if (this.x > 350) {
+            this.y += 17
+            if (this.x >= 350) {
                 this.direction.left = true
             } else if (this.x < 350) {
                 this.direction.right = true
@@ -206,6 +206,28 @@ class CentipedeSegment {
     }
     takeDamage(damage) {
         this.health -= damage
+    }
+    collideWith(sprite) {
+        // detect collision with obstacles in environment or centipede segments
+        if (
+            this.x - this.radius < sprite.x + sprite.width &&
+            this.x + this.radius > sprite.x &&
+            this.y - this.radius < sprite.y + sprite.height &&
+            this.y + this.radius > sprite.y
+        ) {
+            // if (this.direction.right) {
+            //     this.direction.down = true
+            //     this.direction.left = true
+            //     // this.move()
+            // } else if (this.direction.left) {
+            //     this.direction.down = true
+            //     this.direction.right = true
+            //     // this.move()
+            // }
+            // this.direction.down = true
+            return true
+        }
+        return false
     }
 }
 
@@ -343,6 +365,34 @@ const detectHit = () => {
             segment.move()
         }
     })
+    centipede.forEach((segment) => {
+        obstacles.forEach((obstacle) => {
+            if (segment.collideWith(obstacle)) {
+                if (segment.direction.right && segment.direction.left) {
+                    segment.direction.left = false
+                    segment.direction.right = false
+                    // segment.move()
+                } else if (segment.direction.left && segment.direction.down) {
+                    segment.direction.down = false
+                    segment.direction.left = false
+                    segment.direction.right = true
+                    // segment.move()
+                } else if (segment.direction.right && segment.direction.down) {
+                    segment.direction.down = false
+                    segment.direction.right = false
+                    segment.direction.left = true
+                } else if (segment.direction.right) {
+                    segment.y += 17
+                    segment.direction.right = false
+                    segment.direction.left = true
+                } else if (segment.direction.left) {
+                    segment.y += 17
+                    segment.direction.left = false
+                    segment.direction.right = true
+                }
+            }
+        })
+    })
 }
 
 const levelUp = () => {
@@ -367,7 +417,6 @@ const gameLoop = () => {
     levelUp()
     requestAnimationFrame(gameLoop)
 }
-// requestAnimationFrame(gameLoop)
 
 requestAnimationFrame(gameLoop)
 
