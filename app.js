@@ -17,7 +17,7 @@ class Player {
         this.color = color
         this.projectileController = projectileController
         this.alive = true
-        this.speed = 5
+        this.speed = 3
         this.shootPressed = false
         this.direction = {
             up: false,
@@ -64,8 +64,8 @@ class Player {
         }
         this.shoot = function () {
             if (this.shootPressed) {
-                const speed = 5
-                const delay = 10
+                const speed = 2
+                const delay = 20
                 const damage = 1
                 const projectileX = this.x + this.width / 2.5
                 const projectileY = this.y
@@ -152,7 +152,7 @@ class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 3
+        this.speed = 1
         this.radius = 8
         this.color = 'green'
         this.health = 1
@@ -369,6 +369,7 @@ const gameLoop = () => {
 }
 // requestAnimationFrame(gameLoop)
 
+requestAnimationFrame(gameLoop)
 
 document.addEventListener('keydown', (e) => {
     player.setDirection(e.key)
