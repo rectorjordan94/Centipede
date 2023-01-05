@@ -10,7 +10,7 @@ const leftButton = document.getElementById('left-button')
 const shootButton = document.getElementById('shoot-button')
 
 canvas.setAttribute('width', '700px')
-canvas.setAttribute('height', '450px')
+canvas.setAttribute('height', '430px')
 
 let level = 1
 
@@ -282,7 +282,7 @@ const centipedeSpawner = () => {
 centipedeSpawner()
 
 const projectileController = new ProjectileController()
-const player = new Player(350, 420, 20, 20, 'rgb(7,68,252)', projectileController)
+const player = new Player(350, 405, 20, 20, 'rgb(7,68,252)', projectileController)
 
 let score = 0
 let lives = 3

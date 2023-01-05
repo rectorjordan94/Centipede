@@ -5,12 +5,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: black;
+    background-color: #0e0d0d;
 }
 
 .container {
     display: grid;
-    margin: 40px 5px 5px 5px;
+    margin: 25px 5px 5px 5px;
     justify-content: center;
     grid-template-columns: 0.4fr 2.4fr 0.4fr;
     grid-template-rows: 0.6fr 0.3fr 0.2fr 1.8fr .3fr;
@@ -35,9 +35,7 @@ body {
     letter-spacing: 15px;
     font-weight: 900;
     background: #6600ff;
-    /* background: linear-gradient(to right, #822ACE 0%, #000000 100%); */
     background: radial-gradient(ellipse at center, #6600ff 0%, #000000 100%);
-    /* background: radial-gradient(ellipse at center, #000000 0%, #6600ff 100%); */
     border: 12px solid #99ff00;
     border-radius: 20px;
     padding-bottom: 10px;
@@ -77,19 +75,18 @@ body {
 
 .border-left { 
     grid-area: border-left; 
-    background: rgb(2,0,78);
-    background: linear-gradient(0deg, rgba(2,0,78,1) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
+    background: #020036;
+    background: linear-gradient(0deg, #02004e 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
     border-left: 12px solid #6bb200;
     border-right: 12px solid #6bb200;
     border-bottom: 12px solid #6bb200;
     border-radius: 0px 0px 20px 20px;
-    /* transform: translate(0px, -12px) */
 }
 
 .border-right { 
     grid-area: border-right; 
-    background: rgb(2,0,78);
-    background: linear-gradient(0deg, rgb(2, 0, 54) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
+    background: #020036;
+    background: linear-gradient(0deg, #020036 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
     border-left: 12px solid #6bb200;
     border-right: 12px solid #6bb200;
     border-bottom: 12px solid #6bb200;
@@ -97,48 +94,121 @@ body {
 }
 
 .border-bottom {
-    grid-area: border-bottom;
+    margin: 0 auto;
     margin-top: 5px;
+    width: 80%;
+    grid-area: border-bottom;
     border: 12px solid #99ff00;
     border-radius: 20px;
-    /* background: radial-gradient(ellipse at center, #6600ff 0%, #000000 100%); */
-    background-color: rgb(2, 0, 54);
-    padding-top: 12px;
+    background: radial-gradient(ellipse at center, #6600ff 0%, #000000 100%);
     color: white;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(4, 1fr);
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(3, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    /* transform: rotateX(60deg) translateY(-120px); */
+    box-shadow: 12px 0px #6bb200, -12px 0px #6bb200, 24px 0px #4a7c00, -24px 0px #4a7c00;
     }
-    
-    .div1 { grid-area: 2 / 2 / 3 / 3; }
-    .div2 { grid-area: 1 / 3 / 2 / 4; }
-    .div3 { grid-area: 3 / 3 / 4 / 4; }
-    .div4 { grid-area: 2 / 4 / 3 / 5; }
-    .div5 { grid-area: 2 / 6 / 3 / 7; }
-    .div6 { grid-area: 2 / 8 / 3 / 9; }
-    .div7 { grid-area: 3 / 2 / 4 / 3; }
-    .div8 { grid-area: 2 / 3 / 3 / 4; }
-    .div9 { grid-area: 4 / 3 / 5 / 4; }
-    .div10 { grid-area: 3 / 4 / 4 / 5; }
-    .div11 { grid-area: 3 / 6 / 4 / 7; }
-    .div12 { grid-area: 3 / 8 / 4 / 9; }
 
-.buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-}
+    .buttonsCenter {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
 
-.button-text {
+    .div1 { 
+        grid-area: 2 / 1 / 3 / 2;
+        background: linear-gradient(to right, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        margin-left: 6px;
+    }
+    .div2 { 
+        grid-area: 1 / 2 / 2 / 3;
+        background: linear-gradient(to bottom, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding-top: 3px;
+        margin-top: 6px;
+    }
+    .div3 { 
+        grid-area: 3 / 2 / 4 / 3; 
+        background: linear-gradient(to top, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding-bottom: 3px;
+        margin-bottom: 6px;
+    }
+    .div4 { 
+        grid-area: 2 / 3 / 3 / 4; 
+        background: linear-gradient(to left, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        padding-bottom: 3px;
+        padding-top: 3px;
+    }
+    .div5 {
+        grid-area: 2 / 5 / 3 / 6; 
+        background: linear-gradient(to right, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        }
+    .div6 { 
+        grid-area: 2 / 7 / 3 / 8; 
+        background: linear-gradient(to left, #6600ff 0%, #000000 100%);
+        box-shadow: inset 0px 0px 5px 1px #020036;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        margin-right: 6px;
+    }
+
+    .div7 { 
+        grid-area: 2 / 4 / 3 / 5; 
+    }
+    .div8 { 
+        grid-area: 2 / 6 / 3 / 7;
+        background-color: black;
+    }
+    .div9 { 
+        grid-area: 2 / 2 / 3 / 3;
+        background-color: black;
+    }
+
+    .div10 { grid-area: 3 / 5 / 4 / 6; }
+
+    .div11 { grid-area: 3 / 7 / 4 / 8; }
+
+.left {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-right: 3px;
+}
+
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-left: 3px;
+}
+
+.buttonText {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 6px;
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 canvas {
@@ -160,8 +230,5 @@ button {
     border: 6px solid #0000001e;
     padding: 15px 15px;
     margin: 0 auto;
-    box-shadow: inset 0px 0px 6px 2px #0000006c;
+    box-shadow: inset 0px 0px 5px 2px #0000006c;
 }
-
-
-
