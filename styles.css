@@ -10,7 +10,8 @@ body {
 
 .container {
     display: grid;
-    margin-top: 50px;
+    margin: 40px 5px 5px 5px;
+    justify-content: center;
     grid-template-columns: 0.3fr 2.4fr 0.3fr;
     grid-template-rows: 0.7fr 0.3fr 0.3fr 2.6fr .4fr;
     gap: 0px 0px;
@@ -33,21 +34,26 @@ body {
     font-size: 45px;
     letter-spacing: 15px;
     font-weight: 900;
-    background-color: #5b0197;
+    background: #6600ff;
+    /* background: linear-gradient(to right, #822ACE 0%, #000000 100%); */
+    background: radial-gradient(ellipse at center, #6600ff 0%, #000000 100%);
+    /* background: radial-gradient(ellipse at center, #000000 0%, #6600ff 100%); */
     border: 12px solid #99ff00;
     border-radius: 20px;
     padding-bottom: 10px;
-    text-shadow: #00fff2 4px 4px 0px, #000000 8px 8px 0px;
+    text-shadow: #00ffe6 4px 4px 0px, #000000 8px 8px 0px;
+    box-shadow: 0px -10px #6bb200, 10px -10px #6bb200, -10px -10px #6bb200, 0px -20px #4a7c00, 20px -20px #4a7c00, -20px -20px #4a7c00;
+    margin-bottom: 5px;
 }
 
 .border-top { 
     grid-area: border-top; 
-    background-color: rgba(0,225,255,1);
+    background-color: #00ffe6;
     border-left: 12px solid #99ff00;
-    border-top: 12px solid #99ff00;
+    border-top: 12px solid rgba(153, 255, 0, 1);
     border-right: 12px solid #99ff00;
     border-radius: 20px 20px 0px 0px;
-    opacity: .8;
+    opacity: .75;
 }
 
 .game-info { 
@@ -59,7 +65,7 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: black;
-    border-top: 12px solid rgba(153, 255, 0, .8);
+    border-top: 12px solid rgba(153, 255, 0, .75);
     padding: 10px 20px;
 }
 
@@ -71,29 +77,30 @@ body {
 .border-left { 
     grid-area: border-left; 
     background: rgb(2,0,78);
-background: linear-gradient(0deg, rgba(2,0,78,1) 0%, rgba(6,3,99,1) 55%, rgba(0,225,255,1) 100%);
+    background: linear-gradient(0deg, rgba(2,0,78,1) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
     border-left: 12px solid #99ff00;
     border-right: 12px solid #99ff00;
     border-bottom: 12px solid #99ff00;
     border-radius: 0px 0px 20px 20px;
     /* transform: translate(0px, -12px) */
-    opacity: .8;
+    opacity: .75;
 }
 
 .border-right { 
     grid-area: border-right; 
     background: rgb(2,0,78);
-    background: linear-gradient(0deg, rgba(2,0,78,1) 0%, rgba(6,3,99,1) 55%, rgba(0,225,255,1) 100%);
+    background: linear-gradient(0deg, rgb(2, 0, 54) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
     border-left: 12px solid #99ff00;
     border-right: 12px solid #99ff00;
     border-bottom: 12px solid #99ff00;
     border-radius: 0px 0px 20px 20px;
-    opacity: .8;
+    opacity: .75;
 }
 
 .border-bottom { 
     grid-area: border-bottom; 
-    background-color: orange;
+    background-color: #ff001a;
+    /* transform: rotateX(304deg) */
 }
 
 canvas {
