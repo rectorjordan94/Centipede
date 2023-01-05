@@ -12,8 +12,8 @@ body {
     display: grid;
     margin: 40px 5px 5px 5px;
     justify-content: center;
-    grid-template-columns: 0.3fr 2.4fr 0.3fr;
-    grid-template-rows: 0.7fr 0.3fr 0.3fr 2.6fr .4fr;
+    grid-template-columns: 0.4fr 2.4fr 0.4fr;
+    grid-template-rows: 0.6fr 0.3fr 0.2fr 1.8fr .3fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
@@ -31,7 +31,7 @@ body {
     align-items: center; 
     color: #99ff00;
     font-family: 'Orbitron', sans-serif;
-    font-size: 45px;
+    font-size: 40px;
     letter-spacing: 15px;
     font-weight: 900;
     background: #6600ff;
@@ -41,7 +41,7 @@ body {
     border: 12px solid #99ff00;
     border-radius: 20px;
     padding-bottom: 10px;
-    text-shadow: #00ffe6 4px 4px 0px, #000000 8px 8px 0px;
+    text-shadow: #000000 4px 4px 0px, #00ffe6 8px 8px 0px;
     box-shadow: 0px -10px #6bb200, 10px -10px #6bb200, -10px -10px #6bb200, 0px -20px #4a7c00, 20px -20px #4a7c00, -20px -20px #4a7c00;
     margin-bottom: 5px;
 }
@@ -49,11 +49,10 @@ body {
 .border-top { 
     grid-area: border-top; 
     background-color: #00ffe6;
-    border-left: 12px solid #99ff00;
-    border-top: 12px solid rgba(153, 255, 0, 1);
-    border-right: 12px solid #99ff00;
+    border-left: 12px solid #6bb200;
+    border-top: 12px solid #6bb200;
+    border-right: 12px solid #6bb200;
     border-radius: 20px 20px 0px 0px;
-    opacity: .75;
 }
 
 .game-info { 
@@ -65,7 +64,9 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: black;
-    border-top: 12px solid rgba(153, 255, 0, .75);
+    border-top: 12px solid black;
+    border-radius: 20px;
+    box-shadow: 13px -14px #6bb200, -13px -14px #6bb200;
     padding: 10px 20px;
 }
 
@@ -78,29 +79,66 @@ body {
     grid-area: border-left; 
     background: rgb(2,0,78);
     background: linear-gradient(0deg, rgba(2,0,78,1) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
-    border-left: 12px solid #99ff00;
-    border-right: 12px solid #99ff00;
-    border-bottom: 12px solid #99ff00;
+    border-left: 12px solid #6bb200;
+    border-right: 12px solid #6bb200;
+    border-bottom: 12px solid #6bb200;
     border-radius: 0px 0px 20px 20px;
     /* transform: translate(0px, -12px) */
-    opacity: .75;
 }
 
 .border-right { 
     grid-area: border-right; 
     background: rgb(2,0,78);
     background: linear-gradient(0deg, rgb(2, 0, 54) 0%, rgba(6,3,99,1) 55%, #00ffe6 100%);
-    border-left: 12px solid #99ff00;
-    border-right: 12px solid #99ff00;
-    border-bottom: 12px solid #99ff00;
+    border-left: 12px solid #6bb200;
+    border-right: 12px solid #6bb200;
+    border-bottom: 12px solid #6bb200;
     border-radius: 0px 0px 20px 20px;
-    opacity: .75;
 }
 
-.border-bottom { 
-    grid-area: border-bottom; 
-    background-color: #ff001a;
-    /* transform: rotateX(304deg) */
+.border-bottom {
+    grid-area: border-bottom;
+    margin-top: 5px;
+    border: 12px solid #99ff00;
+    border-radius: 20px;
+    /* background: radial-gradient(ellipse at center, #6600ff 0%, #000000 100%); */
+    background-color: rgb(2, 0, 54);
+    padding-top: 12px;
+    color: white;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+    /* transform: rotateX(60deg) translateY(-120px); */
+    }
+    
+    .div1 { grid-area: 2 / 2 / 3 / 3; }
+    .div2 { grid-area: 1 / 3 / 2 / 4; }
+    .div3 { grid-area: 3 / 3 / 4 / 4; }
+    .div4 { grid-area: 2 / 4 / 3 / 5; }
+    .div5 { grid-area: 2 / 6 / 3 / 7; }
+    .div6 { grid-area: 2 / 8 / 3 / 9; }
+    .div7 { grid-area: 3 / 2 / 4 / 3; }
+    .div8 { grid-area: 2 / 3 / 3 / 4; }
+    .div9 { grid-area: 4 / 3 / 5 / 4; }
+    .div10 { grid-area: 3 / 4 / 4 / 5; }
+    .div11 { grid-area: 3 / 6 / 4 / 7; }
+    .div12 { grid-area: 3 / 8 / 4 / 9; }
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+.button-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 canvas {
@@ -112,3 +150,18 @@ canvas {
 h1 {
     margin: 0 auto;
 }
+
+.clicked {
+    pointer-events: none;
+}
+
+button {
+    border-radius: 100%;
+    border: 6px solid #0000001e;
+    padding: 15px 15px;
+    margin: 0 auto;
+    box-shadow: inset 0px 0px 6px 2px #0000006c;
+}
+
+
+

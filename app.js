@@ -2,9 +2,15 @@ const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 const scoreDisplay = document.getElementById('score')
 const livesDisplay = document.getElementById('lives')
+const startButton = document.getElementById('start-button')
+const upButton = document.getElementById('up-button')
+const rightButton = document.getElementById('right-button')
+const downButton = document.getElementById('down-button')
+const leftButton = document.getElementById('left-button')
+const shootButton = document.getElementById('shoot-button')
 
-canvas.setAttribute('width', '753.61px')
-canvas.setAttribute('height', '500px')
+canvas.setAttribute('width', '700px')
+canvas.setAttribute('height', '450px')
 
 let level = 1
 
@@ -17,7 +23,7 @@ class Player {
         this.color = color
         this.projectileController = projectileController
         this.alive = true
-        this.speed = 3
+        this.speed = 5
         this.shootPressed = false
         this.direction = {
             up: false,
@@ -64,8 +70,8 @@ class Player {
         }
         this.shoot = function () {
             if (this.shootPressed) {
-                const speed = 2
-                const delay = 20
+                const speed = 4
+                const delay = 10
                 const damage = 1
                 const projectileX = this.x + this.width / 2.5
                 const projectileY = this.y
@@ -152,7 +158,7 @@ class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 1
+        this.speed = 2
         this.radius = 8
         this.color = 'green'
         this.health = 1
@@ -276,7 +282,7 @@ const centipedeSpawner = () => {
 centipedeSpawner()
 
 const projectileController = new ProjectileController()
-const player = new Player(371, 468, 20, 20, 'rgb(7,68,252)', projectileController)
+const player = new Player(350, 420, 20, 20, 'rgb(7,68,252)', projectileController)
 
 let score = 0
 let lives = 3
@@ -341,10 +347,17 @@ const levelUp = () => {
         score += 1000
         scoreDisplay.textContent = `Score: ${score}`
         level++
-        centipedeLength++
+        centipedeLength += 2
         centipede.length = 0
         obstacles.length = 0
         centipedeSpawner()
+        centipede.forEach((segment) => {
+            if (level >= 3 && level < 6) {
+                segment.speed = 4
+            } else if (level >= 6) {
+                segment.speed = 8
+            }
+        })
         obstacleSpawner()
     }
 }
@@ -360,17 +373,17 @@ function disableHitDetection() {
 function enableHitDetection() {
     segment.collideWith = functionHolder
 }
-
-// centipede.forEach((segment) => {
-//     console.log(segment.collideWith)
-// })
-
+let pause = false
 const die = () => {
     centipede.forEach((segment) => {
         if (segment.collideWith(player)) {
             disableHitDetection()
             lives--
             livesDisplay.textContent = `Lives: ${lives}`
+            if (lives === 0) {
+                pause = true;
+                startButton.classList.remove('clicked')
+            }
             centipede.length = 0
             obstacles.length = 0
             centipedeSpawner()
@@ -380,6 +393,7 @@ const die = () => {
 }
 
 const gameLoop = () => {
+    if (pause) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     projectileController.render()
     player.render()
@@ -390,7 +404,7 @@ const gameLoop = () => {
     requestAnimationFrame(gameLoop)
 }
 
-requestAnimationFrame(gameLoop)
+// gameLoop()
 
 document.addEventListener('keydown', (e) => {
     player.setDirection(e.key)
@@ -402,14 +416,39 @@ document.addEventListener('keyup', (e) => {
     }
 })
 
-document.addEventListener('click', (e) => {
-    console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
+upButton.addEventListener('click', () => {
+    player.direction.up = true
+    setTimeout(() => { player.direction.up = false}, 100)
+})
+rightButton.addEventListener('click', () => {
+    player.direction.right = true
+    setTimeout(() => { player.direction.right = false}, 100)
+})
+downButton.addEventListener('click', () => {
+    player.direction.down = true
+    setTimeout(() => { player.direction.down = false}, 100)
+})
+leftButton.addEventListener('click', () => {
+    player.direction.left = true
+    setTimeout(() => { player.direction.left = false}, 100)
+})
+shootButton.addEventListener('click', () => {
+    player.shootPressed = true
+    setTimeout(() => { player.shootPressed = false}, 250)
 })
 
-document.addEventListener('DOMContentLoaded', function () {
+
+// document.addEventListener('click', (e) => {
+//     console.log(`x: ${e.offsetX} y: ${e.offsetY}`)
+// })
+
+// document.addEventListener('DOMContentLoaded', function () {
+//     gameLoop()
+// })
+
+startButton.addEventListener('click', (e) => {
     gameLoop()
+    e.target.classList.add('clicked')
 })
-
-
 
 
