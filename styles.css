@@ -209,6 +209,7 @@ body {
     font-family: 'Orbitron', sans-serif;
     font-weight: 700;
     font-size: 16px;
+    text-shadow: #000000 3px 3px 0px;
 }
 
 canvas {
@@ -231,4 +232,67 @@ button {
     padding: 15px 15px;
     margin: 0 auto;
     box-shadow: inset 0px 0px 5px 2px #0000006c;
+}
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* align-items: center; */
+    /* gap: 2rem; */
+    width: 670px;
+    /* padding: 1.3rem; */
+    min-height: 430px;
+    position: relative;
+    margin: 0 auto;
+    /* top: 27%;
+    left: 15%; */
+    /* top: 25%;
+    left: 25%; */
+    background-color: black;
+    /* border-radius: 20px; */
+}
+
+.btn {
+    display: inline-block;
+    background-color: black;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.modal-text {
+    margin-top: 30px;
+    font-family: 'Press Start 2P', cursive;
+    text-align: center;
+    color: white;
+    line-height: 20px;
+}
+
+h2 {
+    font-family: 'Press Start 2P', cursive;
+    letter-spacing: 10px;
+    font-size: 30px;
+    color: white;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.start-text {
+    margin-top: 60px;
+    animation: blink-1 1.5s infinite both;
+}
+
+@keyframes blink-1 {
+    0%,
+    50%,
+    100% {
+        opacity: 1;
+    }
+    25%,
+    75% {
+        opacity: 0;
+    }
 }
