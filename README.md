@@ -11,7 +11,7 @@
 
 Remake of the classic Centipede arcade game made with canvas. The game features a keyboard button controlled player character with the ability to fire projectiles at enemies and obstacles in the environment. Game also keeps track of available player lives and score.
 
-![Screenshot](screenshot.jpg)
+![Screenshot](images/screenshot.jpg)
 
 ## User Stories
 
