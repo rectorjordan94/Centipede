@@ -296,3 +296,61 @@ h2 {
         opacity: 0;
     }
 }
+
+input {
+    margin: 0 auto;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    margin-top: 10px;
+    background-color: black;
+    border: none;
+    border-bottom: 8px dashed white;
+    color: white;
+    width: 200px;
+    line-height: 2;
+    animation: blink-1 1.5s infinite both;
+}
+
+input:focus {
+    /* border: 2px solid red; */
+    /* background-color: red; */
+    /* appearance: unset; */
+    outline: none;
+    border: none;
+    animation: blink-1 3s infinite both;
+    /* cursor: none; */
+}
+
+label { 
+    color: white;
+    margin: 0 auto;
+    font-family: 'Press Start 2P', cursive;
+    margin-top: 30px;
+}
+
+high-score {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    /* flex-direction: column-reverse; */
+}
+
+#new-high-score-name {
+    position: relative;
+    left: 20%;
+}
+
+#new-high-score-score {
+    position: relative;
+    left: 60%;
+}
+
+p {
+    color: white;
+    font-family: 'Press Start 2P', cursive;
+    margin-top: 30px;
+    display: inline-block;
+    /* margin-left: 20px; */
+}
+

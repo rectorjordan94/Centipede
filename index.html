@@ -28,7 +28,12 @@
                 <div class="modal-text">YOU CAN ALSO USE THE BUTTONS BELOW TO PLAY</div>
                 <div class="modal-text start-text">CLICK START TO BEGIN</div>
             </section>
-            <div class="overlay hidden"></div>
+            <section class="high-score modal hidden" id="score-modal">
+                <h2>HIGH SCORES</h2>
+                <label for="score-input">Enter Name: </label>
+                <input type="text" id="name-input">
+                <div id="high-score"></div>
+            </section>
             <canvas id="canvas" class="hidden"></canvas>
         </div>
         <div class="border-left"></div>
@@ -47,6 +52,10 @@
             <div class="div11 buttonText">START</div>
         </div>
     </div>
+    <img id="spaceship" class="hidden">
+    <img id="projectile" class="hidden">
+    <img id="obstacle-sprites" class="hidden">
+    <img id="centipede-sprites" class="hidden">
     <script src="app.js"></script>
 </body>
 </html>

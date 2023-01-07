@@ -23,18 +23,16 @@ As a user, I want the ability to:
 * destroy enemies (for varying amounts of points depending on the enemy type)
 * change the player character and environment color upon beating a level
 * keep track of which level I'm on
-* pause the game
-* continue from paused state
 
 ## Wireframes
 
-![Start](START.png)
+![Start](images/START.png)
 
-![HowToPlay](how-to-play.png)
+![HowToPlay](images/how-to-play.png)
 
-![gameScreen](game-screen.png)
+![gameScreen](images/game-screen.png)
 
-![gameOver](game-over.png)
+![gameOver](images/game-over.png)
 
-![highScores](high-scores.png)
+![highScores](images/high-scores.png)
 

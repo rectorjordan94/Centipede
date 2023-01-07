@@ -9,6 +9,18 @@ const downButton = document.getElementById('down-button')
 const leftButton = document.getElementById('left-button')
 const shootButton = document.getElementById('shoot-button')
 const modal = document.getElementById('modal')
+const spaceship = document.getElementById('spaceship')
+const projectile = document.getElementById('projectile')
+const obstacleSprites = document.getElementById('obstacle-sprites')
+const centipedeSprites = document.getElementById('centipede-sprites')
+const nameInput = document.getElementById('name-input')
+const scoreModal = document.getElementById('score-modal')
+const highScore = document.getElementById('high-score')
+
+spaceship.src = 'images/Spaceship-2-1.png (2).png'
+projectile.src = 'images/Projectile-1.png (1).png'
+obstacleSprites.src = 'images/Obstacle_Sprite_Sheet-1.png.png'
+centipedeSprites.src ='images/Centipede_Sprite_Sheet-1.png.png'
 
 canvas.setAttribute('width', '700px')
 canvas.setAttribute('height', '430px')
@@ -23,6 +35,8 @@ const getRandomCoordinates = (max) => {
     return Math.floor((Math.random() * max) + 16)
 }
 
+
+/// CLASSES ///
 class Player {
     constructor(x, y, width, height, color, projectileController) {
         this.x = x
@@ -41,27 +55,34 @@ class Player {
             right: false
         }
         this.render = function () {
-            ctx.fillStyle = this.color
+            // draws hitbox on canvas
             ctx.fillRect(this.x, this.y, this.width, this.height)
+            // draws sprite on canvas
+            ctx.drawImage(spaceship, this.x, this.y)
             this.shoot()
         }
         this.setDirection = function (key) {
+            // initiates player movement based on key down even for the corresponding keys
             if(key.toLowerCase() == 'w') { this.direction.up = true }
             if(key.toLowerCase() == 'a') { this.direction.left = true }
             if(key.toLowerCase() == 's') { this.direction.down = true }
             if (key.toLowerCase() == 'd') { this.direction.right = true }
+            // shoots a projectile if space is pressed
             if(key == ' ') { this.shootPressed = true}
         }
         this.unSetDirection = function (key) {
+            // stops player movement for key up event
             if(key.toLowerCase() == 'w') { this.direction.up = false }
             if(key.toLowerCase() == 'a') { this.direction.left = false }
             if(key.toLowerCase() == 's') { this.direction.down = false }
             if (key.toLowerCase() == 'd') { this.direction.right = false }
+            // when space is released, stops shooting projectiles
             if(key == ' ') { this.shootPressed = false}
         }
         this.movePlayer = function () {
             if (this.direction.up) {
                 this.y -= this.speed
+                // prevents player from moving into the field of obstacles
                 if (this.y <= 330) { this.y = 330 }
             }
             if (this.direction.left) {
@@ -79,6 +100,7 @@ class Player {
         }
         this.shoot = function () {
             if (this.shootPressed) {
+                // if space is pressed, begins shooting projectiles from the center of the player, with a small delay in between each projectile if space is continually held
                 const speed = 4
                 const delay = 10
                 const damage = 1
@@ -96,15 +118,17 @@ class Projectile {
         this.y = y
         this.speed = speed
         this.damage = damage
-        this.width = 3
+        this.width = 5
         this.height = 10
         this.color = 'yellow'
     }
     render() {
         // render and initiate movement of projectiles
-        ctx.fillStyle = this.color
         this.y -= this.speed
+        // draws hitbox on canvas
         ctx.fillRect(this.x, this.y, this.width, this.height)
+        // draws sprite on canvas
+        ctx.drawImage(projectile, this.x, this.y)
     }
     collideWith(sprite) {
         // detect collision with obstacles in environment or centipede segments
@@ -167,7 +191,6 @@ class CentipedeSegment {
         this.y = y
         this.speed = 2
         this.radius = 8
-        this.color = 'green'
         this.health = 1
         this.direction = {
             down: false,
@@ -177,18 +200,60 @@ class CentipedeSegment {
         }
     }
     render() {
-        if (this.health === 1) {
-            ctx.beginPath()
-            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
-            if (level === 1) {
-                ctx.fillStyle = this.color
-            } else if (level === 2) {
-                ctx.fillStyle = 'red'
-            } else if (level === 3) {
-                ctx.fillStyle = 'orange'
+        ctx.beginPath()
+        // draws hitbox on canvas
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
+        // determine what level the user is on and which direction the centipede is currently facing to render the appropriate sprites
+        // could possibly refactor this later, maybe by creating an array of levels and determining if the current level is present in the array
+        if (level === 1 || level === 7 || level === 13 || level === 19) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 0, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 0, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 0, 16, 16, this.x, this.y, 16, 16)
             }
-            ctx.fill()
-        } 
+        } else if (level === 2 || level === 8 || level === 14 || level === 20) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 16, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 16, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 16, 16, 16, this.x, this.y, 16, 16)
+            }
+        } else if (level === 3 || level === 9 || level === 15 || level === 21) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 32, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 32, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 32, 16, 16, this.x, this.y, 16, 16)
+            }
+        } else if (level === 4 || level === 10 || level === 16 || level === 22) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 48, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 48, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 48, 16, 16, this.x, this.y, 16, 16)
+            }
+        } else if (level === 5 || level === 11 || level === 17 || level === 23) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 64, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 64, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 64, 16, 16, this.x, this.y, 16, 16)
+            }
+        } else if (level === 6 || level === 12 || level === 18 || level === 24) {
+            if (this.direction.right === true) {
+                ctx.drawImage(centipedeSprites, 0, 80, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.left === true) {
+                ctx.drawImage(centipedeSprites, 16, 80, 16, 16, this.x, this.y, 16, 16)
+            } else if (this.direction.down === true) {
+                ctx.drawImage(centipedeSprites, 32, 80, 16, 16, this.x, this.y, 16, 16)
+            }
+        }
     }
     move() {
         if (this.direction.right === true) {
@@ -238,22 +303,64 @@ class Obstacle {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.width = 9
-        this.height = 9
-        this.color = 'pink'
+        this.width = 12
+        this.height = 12
         this.alive = true
         this.health = 3
     }
     render() {
-        if (this.health === 3) {
-            ctx.fillStyle = this.color
-            ctx.fillRect(this.x, this.y, this.width, this.height)
-        } else if (this.health === 2) {
-            ctx.fillStyle = 'red'
-            ctx.fillRect(this.x, this.y, this.width, this.height - 3)
-        } else if (this.health === 1) {
-            ctx.fillStyle = 'purple'
-            ctx.fillRect(this.x, this.y, this.width, this.height - 6)
+        ctx.beginPath()
+        // draws hitbox on canvas
+        ctx.fillRect(this.x, this.y, this.width, this.height)
+        // determines level and health of individual obstacles and displays the appropriate sprite
+        if (level === 1 || level === 7 || level === 13 || level === 19) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 0, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 0, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 0, 12, 12, this.x, this.y, this.width, this.height)
+            }
+        } else if (level === 2 || level === 8 || level === 14 || level === 20) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 12, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 12, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 12, 12, 12, this.x, this.y, this.width, this.height)
+            }
+        } else if (level === 3 || level === 9 || level === 15 || level === 21) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 24, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 24, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 24, 12, 12, this.x, this.y, this.width, this.height)
+            }
+        } else if (level === 4 || level === 10 || level === 16 || level === 22) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 36, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 36, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 36, 12, 12, this.x, this.y, this.width, this.height)
+            }
+        } else if (level === 5 || level === 11 || level === 17 || level === 23) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 48, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 48, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 48, 12, 12, this.x, this.y, this.width, this.height)
+            }
+        } else if (level === 6 || level === 12 || level === 18 || level === 24) {
+            if (this.health === 3) {
+                ctx.drawImage(obstacleSprites, 0, 60, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 2) {
+                ctx.drawImage(obstacleSprites, 12, 60, 12, 12, this.x, this.y, this.width, this.height)
+            } else if (this.health === 1) {
+                ctx.drawImage(obstacleSprites, 24, 60, 12, 12, this.x, this.y, this.width, this.height)
+            }
         }
     }
     takeDamage(damage) {
@@ -261,15 +368,17 @@ class Obstacle {
     }
 }
 
+let obstacleLength = 10
+
 const obstacleSpawner = () => {
-    // spawns an array of obstacles at random coordinates
-    for (let i = 0; i < 20; i++){
+    // spawns an array of obstacles at random coordinates, with constraints so they don't spawn to close to the edges or in the player area
+    for (let i = 0; i < obstacleLength; i++){
         obstacles.push(new Obstacle(getRandomCoordinates(canvas.width - 100), getRandomCoordinates(canvas.height / 2 + 100)))
     }
 }
-
+// initializes the array of obstacles
 obstacleSpawner()
-
+// determines centipede start position and initializes the centipede with only 5 segments
 let centipedeX = getRandomCoordinates(400)
 let centipedeY = getRandomCoordinates(25)
 let centipedeLength = 5
@@ -280,13 +389,14 @@ const centipedeSpawner = () => {
         centipede.push(new CentipedeSegment(centipedeX + 16*i, centipedeY))
     } 
 }
-
+// initializes the centipede
 centipedeSpawner()
 
 const projectileController = new ProjectileController()
 const player = new Player(350, 405, 20, 20, 'rgb(7,68,252)', projectileController)
 
 const detectHit = () => {
+    // if any of the obstacles are hit with a projectile, the score increase by 5 and that is displayed appropriately, also if the health of any obstacle reaches 0 it is removed from the array and the canvas
     obstacles.forEach((obstacle) => {
         if (projectileController.collideWith(obstacle)) {
             score += 5
@@ -299,6 +409,7 @@ const detectHit = () => {
             obstacle.render()
         }
     })
+    // if a projectile collides with a segment of the centipede body, the score increases by 100 and that is displayed on the screen, that segment is also removed from the centipede array so that it no longer renders on the canvas
     centipede.forEach((segment) => {
         if (projectileController.collideWith(segment)) {
             score += 100
@@ -312,16 +423,20 @@ const detectHit = () => {
             segment.move()
         }
     })
+    // determines the centipede movement behavior when colliding with obstacles
     centipede.forEach((segment) => {
         obstacles.forEach((obstacle) => {
             if (segment.collideWith(obstacle)) {
+                // prevents centipede from getting stuck
                 if (segment.direction.right && segment.direction.left) {
                     segment.direction.left = false
                     segment.direction.right = false
+                    // if the centipede hits an obstacle while moving right it will shift down and then start moving right
                 } else if (segment.direction.left && segment.direction.down) {
                     segment.direction.down = false
                     segment.direction.left = false
                     segment.direction.right = true
+                    // if the centipede hits an obstacle while moving right it will shift down and then start moving left
                 } else if (segment.direction.right && segment.direction.down) {
                     segment.direction.down = false
                     segment.direction.right = false
@@ -341,18 +456,22 @@ const detectHit = () => {
 }
 
 const levelUp = () => {
+    // if the centipede has no segments left, the game moves to the next level, when moving to the next level the player gets a score boost of 1000 points, the centipede grows 2 additional segments and 5 more obstacles are spawned than the previous level
     if (centipede.length === 0) {
         score += 1000
         scoreDisplay.textContent = `Score: ${score}`
         level++
         centipedeLength += 2
+        obstacleLength += 5
+        // clears out previous arrays before instantiating new ones with spawner functions
         centipede.length = 0
         obstacles.length = 0
         centipedeSpawner()
+        // determines speed of centipede movement based on what level it is, levels 6-12 are at 2x speed and any level beyond 12 is at 4x speed
         centipede.forEach((segment) => {
-            if (level >= 3 && level < 6) {
+            if (level >= 6 && level < 12) {
                 segment.speed = 4
-            } else if (level >= 6) {
+            } else if (level >= 12) {
                 segment.speed = 8
             }
         })
@@ -361,7 +480,7 @@ const levelUp = () => {
 }
 
 let functionHolder
-
+// temporarily stores the centipede segments' collision detection function in a variable and then sets it equal to an empty function in order to prevent additional collisions after the segment has collided with the player, that way only one collision is triggered
 function disableHitDetection() {
     centipede.forEach((segment) => {
         if (!functionHolder) functionHolder = segment.collideWith
@@ -377,14 +496,22 @@ let pause = false
 
 const die = () => {
     centipede.forEach((segment) => {
+        // determines if any of the centipede segments collide with the player or pass off the bottom of the canvas area
         if (segment.collideWith(player) || segment.y + segment.radius > canvas.height) {
             disableHitDetection()
             lives--
             livesDisplay.textContent = `Lives: ${lives}`
+            // if the player runs out of lives the start button is re-enabled so the game can be played again, the high score modal is displayed over the canvas area, the canvas, livesDisplay and scoreDisplay are temporarily removed from the screen, and pause is set to true, stopping the game loop, scoreEntered = false enables the user to input their name to save their high score
             if (lives === 0) {
-                pause = true;
                 startButton.classList.remove('clicked')
+                scoreModal.classList.remove('hidden')
+                canvas.classList.add('hidden')
+                livesDisplay.classList.add('hidden')
+                scoreDisplay.classList.add('hidden')
+                pause = true
+                scoreEntered = false
             }
+            // if the player has lives remaining then a new centipede and new obstacles are spawned at the same lenghts as they were before the player died
             centipede.length = 0
             obstacles.length = 0
             centipedeSpawner()
@@ -394,6 +521,7 @@ const die = () => {
 }
 
 const gameLoop = () => {
+    // if pause is true, end the game loop (this is only triggered when the player runs out of lives)
     if (pause) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     projectileController.render()
@@ -403,6 +531,23 @@ const gameLoop = () => {
     levelUp()
     die()
     requestAnimationFrame(gameLoop)
+}
+
+const reset = () => {
+    // after the game has ended, if the player clicks the start button again the game is reset and all the below variables are returned to their initial values for level one and the centipede and obstacle are spawned
+    centipedeLength = 5
+    obstacleLength = 10
+    centipede.length = 0
+    obstacles.length = 0
+    lives = 3
+    level = 1
+    score = 0
+    centipedeSpawner()
+    obstacleSpawner()
+    scoreDisplay.textContent = `Score: ${score}`
+    livesDisplay.textContent = `Lives: ${lives}`
+    // enables starting the game loop again
+    pause = false
 }
 
 document.addEventListener('keydown', (e) => {
@@ -441,10 +586,33 @@ shootButton.addEventListener('click', () => {
 })
 
 startButton.addEventListener('click', (e) => {
+    // when the start button is clicked initially, the 'how to play' modal is hidden and the canvas and lives/score displays are revealed
+    reset()
     gameLoop()
     e.target.classList.add('clicked')
     modal.classList.add('hidden')
+    // when the player clicks the start button after the game has ended (only possible once the player's lives has reached zero, the high score modal is hidden and the play area and stats are restored)
+    scoreModal.classList.add('hidden')
     canvas.classList.remove('hidden')
     livesDisplay.classList.remove('hidden')
     scoreDisplay.classList.remove('hidden')
+})
+
+let scoreEntered = false
+nameInput.addEventListener('keydown', (e) => {
+    // if the player hits enter in the input field on the high score modal, the modal is appended with the name inputted and the player's score achieved, then the input field is disabled to prevent multiple inputs between games
+    if (e.code === 'Enter' && !scoreEntered) {
+        const newHighScoreDiv = document.createElement('div')
+        const newHighScoreName = document.createElement('p')
+        const newHighScoreScore = document.createElement('p')
+        newHighScoreName.id = 'new-high-score-name'
+        newHighScoreScore.id = 'new-high-score-score'
+        newHighScoreDiv.id = 'new-high-score-div'
+        newHighScoreName.textContent = `${nameInput.value}`
+        newHighScoreScore.textContent = `${score}`
+        newHighScoreDiv.appendChild(newHighScoreName)
+        newHighScoreDiv.appendChild(newHighScoreScore)
+        highScore.appendChild(newHighScoreDiv)
+        scoreEntered = true
+    }
 })
