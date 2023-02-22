@@ -35,7 +35,6 @@ const getRandomCoordinates = (max) => {
     return Math.floor((Math.random() * max) + 16)
 }
 
-
 /// CLASSES ///
 class Player {
     constructor(x, y, width, height, color, projectileController) {

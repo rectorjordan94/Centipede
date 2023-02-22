@@ -11,8 +11,6 @@
 
 Remake of the classic Centipede arcade game made with canvas. The game features a keyboard button controlled player character with the ability to fire projectiles at enemies and obstacles in the environment. Game also keeps track of available player lives and score.
 
-![Screenshot](images/screenshot.jpg)
-
 ## User Stories
 
 As a user, I want the ability to:
@@ -24,15 +22,10 @@ As a user, I want the ability to:
 * change the player character and environment color upon beating a level
 * keep track of which level I'm on
 
-## Wireframes
+## Screenshots
 
-![Start](images/START.png)
+![Start](images/centipede_start.png)
 
-![HowToPlay](images/how-to-play.png)
+![HowToPlay](images/centipede_play.png)
 
-![gameScreen](images/game-screen.png)
-
-![gameOver](images/game-over.png)
-
-![highScores](images/high-scores.png)
-
+![Score](images/centipede_score.png)
