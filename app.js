@@ -60,24 +60,24 @@ class Player {
             ctx.drawImage(spaceship, this.x, this.y)
             this.shoot()
         }
-        this.setDirection = function (key) {
-            // initiates player movement based on key down even for the corresponding keys
-            if(key.toLowerCase() == 'w') { this.direction.up = true }
-            if(key.toLowerCase() == 'a') { this.direction.left = true }
-            if(key.toLowerCase() == 's') { this.direction.down = true }
-            if (key.toLowerCase() == 'd') { this.direction.right = true }
-            // shoots a projectile if space is pressed
-            if(key == ' ') { this.shootPressed = true}
-        }
-        this.unSetDirection = function (key) {
-            // stops player movement for key up event
-            if(key.toLowerCase() == 'w') { this.direction.up = false }
-            if(key.toLowerCase() == 'a') { this.direction.left = false }
-            if(key.toLowerCase() == 's') { this.direction.down = false }
-            if (key.toLowerCase() == 'd') { this.direction.right = false }
-            // when space is released, stops shooting projectiles
-            if(key == ' ') { this.shootPressed = false}
-        }
+        // this.setDirection = function (key) {
+        //     // initiates player movement based on key down even for the corresponding keys
+        //     if(key.toLowerCase() == 'w') { this.direction.up = true }
+        //     if(key.toLowerCase() == 'a') { this.direction.left = true }
+        //     if(key.toLowerCase() == 's') { this.direction.down = true }
+        //     if (key.toLowerCase() == 'd') { this.direction.right = true }
+        //     // shoots a projectile if space is pressed
+        //     if(key == ' ') { this.shootPressed = true}
+        // }
+        // this.unSetDirection = function (key) {
+        //     // stops player movement for key up event
+        //     if(key.toLowerCase() == 'w') { this.direction.up = false }
+        //     if(key.toLowerCase() == 'a') { this.direction.left = false }
+        //     if(key.toLowerCase() == 's') { this.direction.down = false }
+        //     if (key.toLowerCase() == 'd') { this.direction.right = false }
+        //     // when space is released, stops shooting projectiles
+        //     if(key == ' ') { this.shootPressed = false}
+        // }
         this.movePlayer = function () {
             if (this.direction.up) {
                 this.y -= this.speed
@@ -108,6 +108,21 @@ class Player {
                 this.projectileController.shoot(projectileX, projectileY, speed, damage, delay)
             }
         }
+    }
+    //* modified set and unset direction methods to accept keysPressed state
+    setDirection(keysPressed) {
+        this.direction.up = keysPressed.up
+        this.direction.down = keysPressed.down
+        this.direction.left = keysPressed.left
+        this.direction.right = keysPressed.right
+        this.shootPressed = keysPressed.space
+    }
+    unSetDirection(keysPressed) {
+        this.direction.up = keysPressed.up
+        this.direction.down = keysPressed.down
+        this.direction.left = keysPressed.left
+        this.direction.right = keysPressed.right
+        this.shootPressed = keysPressed.space
     }
 }
 
@@ -188,7 +203,7 @@ class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 2
+        this.speed = 1
         this.radius = 8
         this.health = 1
         this.direction = {
@@ -469,9 +484,11 @@ const levelUp = () => {
         // determines speed of centipede movement based on what level it is, levels 6-12 are at 2x speed and any level beyond 12 is at 4x speed
         centipede.forEach((segment) => {
             if (level >= 6 && level < 12) {
+                segment.speed = 2
+            } else if (level >= 12 && level < 18) {
+                segment.speed = 3
+            } else if (level >= 18 && level < 24) {
                 segment.speed = 4
-            } else if (level >= 12) {
-                segment.speed = 8
             }
         })
         obstacleSpawner()
@@ -549,14 +566,44 @@ const reset = () => {
     pause = false
 }
 
+// state to track pressed keys
+const keysPressed = {
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+    space: false
+}
+
+// document.addEventListener('keydown', (e) => {
+//     player.setDirection(e.key)
+// })
 document.addEventListener('keydown', (e) => {
-    player.setDirection(e.key)
+    if (e.key.toLowerCase() === 'w') keysPressed.up = true
+    if (e.key.toLowerCase() === 'a') keysPressed.left = true
+    if (e.key.toLowerCase() === 's') keysPressed.down = true
+    if (e.key.toLowerCase() === 'd') keysPressed.right = true
+    if (e.key === ' ') keysPressed.space = true
+
+    // update player directions based on keysPressed state
+    player.setDirection(keysPressed)
 })
 
+// document.addEventListener('keyup', (e) => {
+//     if (['w', 'a', 's', 'd', ' '].includes(e.key)) {
+//         player.unSetDirection(e.key)
+//     }
+// })
+
 document.addEventListener('keyup', (e) => {
-    if (['w', 'a', 's', 'd', ' '].includes(e.key)) {
-        player.unSetDirection(e.key)
-    }
+    if (e.key.toLowerCase() === 'w') keysPressed.up = false
+    if (e.key.toLowerCase() === 'a') keysPressed.left = false
+    if (e.key.toLowerCase() === 's') keysPressed.down = false
+    if (e.key.toLowerCase() === 'd') keysPressed.right = false
+    if (e.key === ' ') keysPressed.space = false
+    
+    // update player directions based on keysPressed state
+    player.unSetDirection(keysPressed)
 })
 
 upButton.addEventListener('click', () => {
