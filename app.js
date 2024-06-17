@@ -203,7 +203,7 @@ class CentipedeSegment {
     constructor(x, y) {
         this.x = x
         this.y = y
-        this.speed = 2
+        this.speed = 1
         this.radius = 8
         this.health = 1
         this.direction = {
@@ -484,9 +484,11 @@ const levelUp = () => {
         // determines speed of centipede movement based on what level it is, levels 6-12 are at 2x speed and any level beyond 12 is at 4x speed
         centipede.forEach((segment) => {
             if (level >= 6 && level < 12) {
+                segment.speed = 2
+            } else if (level >= 12 && level < 18) {
+                segment.speed = 3
+            } else if (level >= 18 && level < 24) {
                 segment.speed = 4
-            } else if (level >= 12) {
-                segment.speed = 8
             }
         })
         obstacleSpawner()
